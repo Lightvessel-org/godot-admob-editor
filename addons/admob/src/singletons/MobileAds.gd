@@ -6,20 +6,23 @@ func _ready() -> void:
 
 
 func load_banner(ad_unit_name : String = "standard") -> void:
-	if _plugin:
+	if _plugin && _is_valid_ad_unit_name(config.banner.unit_ids, ad_unit_name):
 		_plugin.load_banner(config.banner.unit_ids[OS.get_name()][ad_unit_name], config.banner.position, config.banner.size, config.banner.show_instantly, config.banner.respect_safe_area)
 
 func load_interstitial(ad_unit_name : String = "standard") -> void:
-	if _plugin:
+	if _plugin && _is_valid_ad_unit_name(config.interstitial.unit_ids, ad_unit_name):
 		_plugin.load_interstitial(config.interstitial.unit_ids[OS.get_name()][ad_unit_name])
 
 func load_rewarded(ad_unit_name : String = "standard") -> void:
-	if _plugin:
+	if _plugin && _is_valid_ad_unit_name(config.rewarded.unit_ids, ad_unit_name):
 		_plugin.load_rewarded(config.rewarded.unit_ids[OS.get_name()][ad_unit_name])
 
 func load_rewarded_interstitial(ad_unit_name : String = "standard") -> void:
-	if _plugin:
+	if _plugin && _is_valid_ad_unit_name(config.rewarded_interstitial.unit_ids, ad_unit_name):
 		_plugin.load_rewarded_interstitial(config.rewarded_interstitial.unit_ids[OS.get_name()][ad_unit_name])
+
+func _is_valid_ad_unit_name(ids : Dictionary, ad_unit_name : String) -> bool:
+	return ids[OS.get_name()].has(ad_unit_name)
 
 func destroy_banner() -> void:
 	if _plugin:
@@ -37,9 +40,9 @@ func show_interstitial() -> void:
 	if _plugin:
 		_plugin.show_interstitial()
 
-func show_rewarded() -> void:
-	if _plugin:
-		_plugin.show_rewarded()
+func show_rewarded(ad_unit_name : String = "standard") -> void:
+	if _plugin && _is_valid_ad_unit_name(config.rewarded.unit_ids, ad_unit_name):
+		_plugin.show_rewarded(config.rewarded.unit_ids[OS.get_name()][ad_unit_name])
 
 func show_rewarded_interstitial() -> void:
 	if _plugin:
@@ -83,9 +86,9 @@ func get_is_interstitial_loaded() -> bool:
 		return _plugin.get_is_interstitial_loaded()
 	return false
 
-func get_is_rewarded_loaded() -> bool:
-	if _plugin:
-		return _plugin.get_is_rewarded_loaded()
+func get_is_rewarded_loaded(ad_unit_name : String = "standard") -> bool:
+	if _plugin && _is_valid_ad_unit_name(config.rewarded.unit_ids, ad_unit_name):
+		return _plugin.get_is_rewarded_loaded(config.rewarded.unit_ids[OS.get_name()][ad_unit_name])
 	return false
 
 func get_is_rewarded_interstitial_loaded() -> bool:
@@ -99,8 +102,9 @@ func _on_get_tree_resized() -> void:
 			load_banner()
 		if get_is_interstitial_loaded(): #verify if interstitial and rewarded is loaded because the only reason to load again now is to resize
 			load_interstitial()
-		if get_is_rewarded_loaded():
-			load_rewarded()
+		for key in config.rewarded.unit_ids[OS.get_name()].keys():
+			if get_is_rewarded_loaded(key):
+				load_rewarded(key)
 		if get_is_rewarded_interstitial_loaded():
 			load_rewarded_interstitial()
 

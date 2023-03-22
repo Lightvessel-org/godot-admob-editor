@@ -80,6 +80,8 @@ func _ready() -> void:
 		# warning-ignore:return_value_discarded
 		MobileAds.connect("rewarded_ad_recorded_impression", self, "_on_MobileAds_rewarded_ad_recorded_impression")
 		# warning-ignore:return_value_discarded
+		MobileAds.connect("rewarded_ad_earned_rewarded", self, "_on_MobileAds_rewarded_ad_earned_rewarded")
+		# warning-ignore:return_value_discarded
 		MobileAds.connect("rewarded_interstitial_ad_loaded", self, "_on_MobileAds_rewarded_interstitial_ad_loaded")
 		# warning-ignore:return_value_discarded
 		MobileAds.connect("rewarded_interstitial_ad_closed", self, "_on_MobileAds_rewarded_interstitial_ad_closed")
@@ -94,7 +96,7 @@ func _ready() -> void:
 		# warning-ignore:return_value_discarded
 		MobileAds.connect("rewarded_interstitial_ad_recorded_impression", self, "_on_MobileAds_rewarded_interstitial_ad_recorded_impression")
 		# warning-ignore:return_value_discarded
-		MobileAds.connect("user_earned_rewarded", self, "_on_MobileAds_user_earned_rewarded")
+		MobileAds.connect("rewarded_interstitial_earned_rewarded", self, "_on_MobileAds_rewarded_interstitial_earned_rewarded")
 		# warning-ignore:return_value_discarded
 		MobileAds.connect("initialization_complete", self, "_on_MobileAds_initialization_complete")
 	else:
@@ -209,13 +211,16 @@ func _on_RewardedInterstitial_pressed() -> void:
 	MobileAds.show_rewarded_interstitial()
 	RewardedInterstitial.disabled = true
 
-func _on_MobileAds_rewarded_ad_loaded() -> void:
+func _on_MobileAds_rewarded_ad_loaded(ad_unit : String) -> void:
 	Rewarded.disabled = false
 	_add_text_Advice_Node("Rewarded ad loaded")
 	
-func _on_MobileAds_rewarded_ad_closed() -> void:
+func _on_MobileAds_rewarded_ad_closed(ad_unit : String) -> void:
 	MobileAds.load_rewarded()
 	_add_text_Advice_Node("Rewarded ad closed")
+
+func _on_MobileAds_rewarded_ad_earned_rewarded(ad_unit : String, currency : String, amount : int) -> void:
+	Advice.bbcode_text += "EARNED " + currency + " with amount: " + str(amount) + " with id: " + ad_unit + "\n"
 
 func _on_MobileAds_rewarded_interstitial_ad_loaded() -> void:
 	RewardedInterstitial.disabled = false
@@ -224,8 +229,8 @@ func _on_MobileAds_rewarded_interstitial_ad_loaded() -> void:
 func _on_MobileAds_rewarded_interstitial_ad_closed() -> void:
 	MobileAds.load_rewarded_interstitial()
 	_add_text_Advice_Node("Rewarded Interstitial ad closed")
-	
-func _on_MobileAds_user_earned_rewarded(currency : String, amount : int) -> void:
+
+func _on_MobileAds_rewarded_interstitial_earned_rewarded(currency : String, amount : int) -> void:
 	Advice.bbcode_text += "EARNED " + currency + " with amount: " + str(amount) + "\n"
 
 func _on_MobileAds_consent_form_dismissed() -> void:

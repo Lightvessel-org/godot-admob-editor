@@ -24,13 +24,14 @@ signal interstitial_clicked()
 signal interstitial_closed()
 signal interstitial_recorded_impression()
 
-signal rewarded_ad_failed_to_load(error_code)
-signal rewarded_ad_loaded()
-signal rewarded_ad_failed_to_show(error_code)
-signal rewarded_ad_opened()
-signal rewarded_ad_clicked()
-signal rewarded_ad_closed()
-signal rewarded_ad_recorded_impression()
+signal rewarded_ad_failed_to_load(ad_unit, error_code)
+signal rewarded_ad_loaded(ad_unit)
+signal rewarded_ad_failed_to_show(ad_unit, error_code)
+signal rewarded_ad_opened(ad_unit)
+signal rewarded_ad_clicked(ad_unit)
+signal rewarded_ad_closed(ad_unit)
+signal rewarded_ad_recorded_impression(ad_unit)
+signal rewarded_ad_earned_rewarded(ad_unit, currency, amount)
 
 signal rewarded_interstitial_ad_failed_to_load(error_code)
 signal rewarded_interstitial_ad_loaded()
@@ -39,8 +40,8 @@ signal rewarded_interstitial_ad_opened()
 signal rewarded_interstitial_ad_clicked()
 signal rewarded_interstitial_ad_closed()
 signal rewarded_interstitial_ad_recorded_impression()
+signal rewarded_interstitial_earned_rewarded(currency, amount)
 
-signal user_earned_rewarded(currency, amount)
 
 var AdMobSettings = preload("res://addons/admob/src/utils/AdMobSettings.gd").new()
 onready var config = AdMobSettings.config
@@ -112,6 +113,7 @@ func _connect_signals() -> void:
 	_plugin.connect("rewarded_ad_clicked", self, "_on_AdMob_rewarded_ad_clicked")
 	_plugin.connect("rewarded_ad_closed", self, "_on_AdMob_rewarded_ad_closed")
 	_plugin.connect("rewarded_ad_recorded_impression", self, "_on_AdMob_rewarded_ad_recorded_impression")
+	_plugin.connect("rewarded_ad_earned_rewarded", self, "_on_AdMob_rewarded_ad_earned_rewarded")
 
 	_plugin.connect("rewarded_interstitial_ad_failed_to_load", self, "_on_AdMob_rewarded_interstitial_ad_failed_to_load")
 	_plugin.connect("rewarded_interstitial_ad_loaded", self, "_on_AdMob_rewarded_interstitial_ad_loaded")
@@ -120,8 +122,7 @@ func _connect_signals() -> void:
 	_plugin.connect("rewarded_interstitial_ad_clicked", self, "_on_AdMob_rewarded_interstitial_ad_clicked")
 	_plugin.connect("rewarded_interstitial_ad_closed", self, "_on_AdMob_rewarded_interstitial_ad_closed")
 	_plugin.connect("rewarded_interstitial_ad_recorded_impression", self, "_on_AdMob_rewarded_interstitial_ad_recorded_impression")
-
-	_plugin.connect("user_earned_rewarded", self, "_on_AdMob_user_earned_rewarded")
+	_plugin.connect("rewarded_interstitial_earned_rewarded", self, "_on_AdMob_rewarded_interstitial_earned_rewarded")
 
 
 func _on_AdMob_initialization_complete(status : int, adapter_name : String) -> void:
@@ -168,20 +169,28 @@ func _on_AdMob_interstitial_closed() -> void:
 func _on_AdMob_interstitial_recorded_impression() -> void:
 	emit_signal("interstitial_recorded_impression")
 
-func _on_AdMob_rewarded_ad_failed_to_load(error_code : int) -> void:
-	emit_signal("rewarded_ad_failed_to_load", error_code)
-func _on_AdMob_rewarded_ad_loaded() -> void:
-	emit_signal("rewarded_ad_loaded")
-func _on_AdMob_rewarded_ad_failed_to_show(error_code : int) -> void:
-	emit_signal("rewarded_ad_failed_to_show", error_code)
-func _on_AdMob_rewarded_ad_opened() -> void:
-	emit_signal("rewarded_ad_opened")
-func _on_AdMob_rewarded_ad_clicked() -> void:
-	emit_signal("rewarded_ad_clicked")
-func _on_AdMob_rewarded_ad_closed() -> void:
-	emit_signal("rewarded_ad_closed")
-func _on_AdMob_rewarded_ad_recorded_impression() -> void:
-	emit_signal("rewarded_ad_recorded_impression")
+func _on_AdMob_rewarded_ad_failed_to_load(raw_ad_unit : String, error_code : int) -> void:
+	emit_signal("rewarded_ad_failed_to_load", _get_ad_unit_from_raw(raw_ad_unit, config.rewarded.unit_ids[OS.get_name()]), error_code)
+func _on_AdMob_rewarded_ad_loaded(raw_ad_unit : String) -> void:
+	emit_signal("rewarded_ad_loaded", _get_ad_unit_from_raw(raw_ad_unit, config.rewarded.unit_ids[OS.get_name()]))
+func _on_AdMob_rewarded_ad_failed_to_show(raw_ad_unit : String, error_code : int) -> void:
+	emit_signal("rewarded_ad_failed_to_show", _get_ad_unit_from_raw(raw_ad_unit, config.rewarded.unit_ids[OS.get_name()]), error_code)
+func _on_AdMob_rewarded_ad_opened(raw_ad_unit : String) -> void:
+	emit_signal("rewarded_ad_opened", _get_ad_unit_from_raw(raw_ad_unit, config.rewarded.unit_ids[OS.get_name()]))
+func _on_AdMob_rewarded_ad_clicked(raw_ad_unit : String) -> void:
+	emit_signal("rewarded_ad_clicked", _get_ad_unit_from_raw(raw_ad_unit, config.rewarded.unit_ids[OS.get_name()]))
+func _on_AdMob_rewarded_ad_closed(raw_ad_unit : String) -> void:
+	emit_signal("rewarded_ad_closed", _get_ad_unit_from_raw(raw_ad_unit, config.rewarded.unit_ids[OS.get_name()]))
+func _on_AdMob_rewarded_ad_recorded_impression(raw_ad_unit : String) -> void:
+	emit_signal("rewarded_ad_recorded_impression", _get_ad_unit_from_raw(raw_ad_unit, config.rewarded.unit_ids[OS.get_name()]))
+func _on_AdMob_rewarded_ad_earned_rewarded(raw_ad_unit : String, currency : String, amount : int) -> void:
+	emit_signal("rewarded_ad_earned_rewarded", _get_ad_unit_from_raw(raw_ad_unit, config.rewarded.unit_ids[OS.get_name()]), currency, amount)
+
+func _get_ad_unit_from_raw(raw_ad_unit : String, ad_units : Dictionary) -> String:
+	for key in ad_units.keys():
+		if ad_units[key] == raw_ad_unit:
+			return key
+	return raw_ad_unit
 
 func _on_AdMob_rewarded_interstitial_ad_failed_to_load(error_code : int) -> void:
 	emit_signal("rewarded_interstitial_ad_failed_to_load", error_code)
@@ -197,6 +206,7 @@ func _on_AdMob_rewarded_interstitial_ad_closed() -> void:
 	emit_signal("rewarded_interstitial_ad_closed")
 func _on_AdMob_rewarded_interstitial_ad_recorded_impression() -> void:
 	emit_signal("rewarded_interstitial_ad_recorded_impression")
+func _on_AdMob_rewarded_interstitial_earned_rewarded(currency : String, amount : int) -> void:
+	emit_signal("rewarded_interstitial_earned_rewarded", currency, amount)
 
-func _on_AdMob_user_earned_rewarded(currency : String, amount : int) -> void:
-	emit_signal("user_earned_rewarded", currency, amount)
+
