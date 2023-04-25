@@ -1,5 +1,15 @@
 extends Node
 
+const ANDROID_BANNER_TEST_ID: String = "ca-app-pub-3940256099942544/6300978111"
+const ANDROID_INTERSTITIAL_TEST_ID: String = "ca-app-pub-3940256099942544/1033173712"
+const ANDROID_REWARDED_VIDEO_TEST_ID: String = "ca-app-pub-3940256099942544/5224354917"
+const ANDROID_REWARDED_INTERSTITIAL_TEST_ID: String = "ca-app-pub-3940256099942544/5354046379"
+
+const IOS_BANNER_TEST_ID: String = "ca-app-pub-3940256099942544/2934735716"
+const IOS_INTERSTITIAL_TEST_ID: String = "ca-app-pub-3940256099942544/4411468910"
+const IOS_REWARDED_VIDEO_TEST_ID: String = "ca-app-pub-3940256099942544/1712485313"
+const IOS_REWARDED_INTERSTITIAL_TEST_ID: String = "ca-app-pub-3940256099942544/6978759866"
+
 signal initialization_complete(status, adapter_name)
 
 signal consent_form_dismissed()
@@ -73,11 +83,31 @@ func initialize() -> void:
 			is_test_europe_user_consent = false
 
 			if is_debug_on_release:
-				is_real = config.debug.is_real 
+				is_real = config.debug.is_real
+				_set_ids_to_test()
 				is_test_europe_user_consent = config.debug.is_test_europe_user_consent
+		else:
+			_set_ids_to_test()
 		
 		_plugin.initialize(config.general.is_for_child_directed_treatment, config.general.max_ad_content_rating, is_real, is_test_europe_user_consent)
 
+
+func _set_ids_to_test() -> void:
+	var reconfig: Dictionary = {
+		ANDROID_BANNER_TEST_ID: config.banner.unit_ids.Android,
+		ANDROID_INTERSTITIAL_TEST_ID: config.interstitial.unit_ids.Android,
+		ANDROID_REWARDED_VIDEO_TEST_ID: config.rewarded.unit_ids.Android,
+		ANDROID_REWARDED_INTERSTITIAL_TEST_ID: config.rewarded_interstitial.unit_ids.Android,
+		IOS_BANNER_TEST_ID: config.banner.unit_ids.iOS,
+		IOS_INTERSTITIAL_TEST_ID: config.interstitial.unit_ids.iOS,
+		IOS_REWARDED_VIDEO_TEST_ID: config.rewarded.unit_ids.iOS,
+		IOS_REWARDED_INTERSTITIAL_TEST_ID: config.rewarded_interstitial.unit_ids.iOS,
+	}
+	
+	for test_id in reconfig.keys():
+		var unit_ids: Dictionary = reconfig[test_id]
+		for unit_name in unit_ids.keys():
+			unit_ids[unit_name] = test_id
 
 
 
