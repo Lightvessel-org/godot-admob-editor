@@ -84,9 +84,9 @@ func initialize() -> void:
 
 			if is_debug_on_release:
 				is_real = config.debug.is_real
-				_set_ids_to_test()
 				is_test_europe_user_consent = config.debug.is_test_europe_user_consent
-		else:
+		
+		if !is_real:
 			_set_ids_to_test()
 		
 		_plugin.initialize(config.general.is_for_child_directed_treatment, config.general.max_ad_content_rating, is_real, is_test_europe_user_consent)
