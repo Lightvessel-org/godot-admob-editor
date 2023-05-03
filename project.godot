@@ -8,6 +8,16 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Control",
+"class": "NativeAdReference",
+"language": "GDScript",
+"path": "res://addons/admob/src/utils/NativeAdReference.gd"
+} ]
+_global_script_class_icons={
+"NativeAdReference": ""
+}
+
 [admob]
 
 config={

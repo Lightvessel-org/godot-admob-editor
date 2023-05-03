@@ -1,6 +1,10 @@
 extends "res://addons/admob/src/singletons/AdMobSingleton.gd" 
 
+signal banner_shown(is_shown)
+signal native_shown(is_shown)
+
 var _native_control: Control
+
 
 func _ready() -> void:
 	# warning-ignore:return_value_discarded
@@ -46,14 +50,17 @@ func _is_valid_ad_unit_name(ids : Dictionary, ad_unit_name : String) -> bool:
 func destroy_banner() -> void:
 	if _plugin:
 		_plugin.destroy_banner()
+		emit_signal("banner_shown", false)
 
 func show_banner() -> void:
 	if _plugin:
 		_plugin.show_banner()
+		emit_signal("banner_shown", true)
 		
 func hide_banner() -> void:
 	if _plugin:
 		_plugin.hide_banner()
+		emit_signal("banner_shown", false)
 
 func show_interstitial() -> void:
 	if _plugin:
@@ -67,17 +74,31 @@ func show_rewarded_interstitial() -> void:
 	if _plugin:
 		_plugin.show_rewarded_interstitial()
 
+func get_native_dimensions() -> Rect2:
+	if _native_control != null:
+		return Rect2(_native_control.rect_global_position, _native_control.rect_size)
+	return Rect2()
+
 func destroy_native() -> void:
 	if _plugin:
 		_plugin.destroy_native()
+		emit_signal("native_shown", false)
+
+func _on_AdMob_native_destroyed() -> void:
+	if !_native_control.is_inside_tree():
+		_native_control.queue_free()
+	_native_control = null
+	._on_AdMob_native_destroyed()
 
 func show_native() -> void:
 	if _plugin:
 		_plugin.show_native()
+		emit_signal("native_shown", true)
 
 func hide_native() -> void:
 	if _plugin:
 		_plugin.hide_native()
+		emit_signal("native_shown", false)
 
 func request_user_consent() -> void:
 	if _plugin:
@@ -146,6 +167,3 @@ func _on_get_tree_resized() -> void:
 		
 		if get_is_native_loaded():
 			load_native("standard", _native_control)
-
-## native last implementation
-## https://github.com/Poing-Studios/godot-admob-editor/commit/a2c33845a07c07c8adc94d347cdd3ea8e9a41f8a#diff-c1ceb57161f7ae994689b135a38645af802312d5b3be7dc4e77158af1e54d43a
