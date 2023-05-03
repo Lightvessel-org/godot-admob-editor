@@ -63,6 +63,16 @@ var config : Dictionary = {
 				"standard" : "ca-app-pub-3940256099942544/6978759866"
 			}
 		}
+	},
+	"native": {
+		"unit_ids" : {
+			"Android": {
+				"standard" : "ca-app-pub-3940256099942544/2247696110"
+			},
+			"iOS": {
+				"standard" : "ca-app-pub-3940256099942544/3986624511"
+			}
+		}
 	}
 } setget set_config
 

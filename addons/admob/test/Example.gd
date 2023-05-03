@@ -1,18 +1,23 @@
 extends Control
 
-onready var EnableBanner : Button = $Background/TabContainer/AdFormats/VBoxContainer/Banner/EnableBanner
-onready var DisableBanner : Button = $Background/TabContainer/AdFormats/VBoxContainer/Banner/DisableBanner
-onready var ShowBanner : Button = $Background/TabContainer/AdFormats/VBoxContainer/Banner2/ShowBanner
-onready var HideBanner : Button = $Background/TabContainer/AdFormats/VBoxContainer/Banner2/HideBanner
+onready var EnableBanner : Button = $"%EnableBanner"
+onready var DisableBanner : Button = $"%DisableBanner"
+onready var ShowBanner : Button = $"%ShowBanner"
+onready var HideBanner : Button = $"%HideBanner"
 
-onready var Interstitial : Button = $Background/TabContainer/AdFormats/VBoxContainer/Interstitial
-onready var Rewarded : Button = $Background/TabContainer/AdFormats/VBoxContainer/Rewarded
-onready var RewardedInterstitial : Button = $Background/TabContainer/AdFormats/VBoxContainer/RewardedInterstitial
+onready var Interstitial : Button = $"%Interstitial"
+onready var Rewarded : Button = $"%Rewarded"
+onready var RewardedInterstitial : Button = $"%RewardedInterstitial"
 
-onready var RequestUserConsent : Button = $Background/TabContainer/UMP/VBoxContainer/RequestUserConsent
-onready var ResetConsentState : Button = $Background/TabContainer/UMP/VBoxContainer/ResetConsentState
+onready var EnableNative: Button = $"%EnableNative"
+onready var DisableNative: Button = $"%DisableNative"
+onready var ShowNative: Button = $"%ShowNative"
+onready var HideNative: Button = $"%HideNative"
 
-onready var Advice : RichTextLabel = $Background/Advice
+onready var RequestUserConsent : Button = $"%RequestUserConsent"
+onready var ResetConsentState : Button = $"%ResetConsentState"
+
+onready var Advice : RichTextLabel = $"%Advice"
 
 onready var BannerPosition : CheckBox = $Background/TabContainer/Banner/VBoxContainer/Position
 onready var RespectSafeArea : CheckBox = $Background/TabContainer/Banner/VBoxContainer/RespectSafeArea
@@ -98,6 +103,20 @@ func _ready() -> void:
 		# warning-ignore:return_value_discarded
 		MobileAds.connect("rewarded_interstitial_earned_rewarded", self, "_on_MobileAds_rewarded_interstitial_earned_rewarded")
 		# warning-ignore:return_value_discarded
+		MobileAds.connect("native_loaded", self, "_on_MobileAds_native_loaded")
+		# warning-ignore:return_value_discarded
+		MobileAds.connect("native_destroyed", self, "_on_MobileAds_native_destroyed")
+		# warning-ignore:return_value_discarded
+		MobileAds.connect("native_opened", self, "_on_MobileAds_native_opened")
+		# warning-ignore:return_value_discarded
+		MobileAds.connect("native_closed", self, "_on_MobileAds_native_closed")
+		# warning-ignore:return_value_discarded
+		MobileAds.connect("native_clicked", self, "_on_MobileAds_native_clicked")
+		# warning-ignore:return_value_discarded
+		MobileAds.connect("native_failed_to_load", self, "_on_MobileAds_native_failed_to_load")
+		# warning-ignore:return_value_discarded
+		MobileAds.connect("native_recorded_impression", self, "_on_MobileAds_native_recorded_impression")
+		# warning-ignore:return_value_discarded
 		MobileAds.connect("initialization_complete", self, "_on_MobileAds_initialization_complete")
 	else:
 		_add_text_Advice_Node("AdMob only works on Android or iOS devices!")
@@ -145,6 +164,17 @@ func _on_MobileAds_banner_failed_to_load(error_code):
 func _on_MobileAds_banner_recorded_impression():
 	_add_text_Advice_Node("Banner recorded impression")
 
+func _on_MobileAds_native_opened():
+	_add_text_Advice_Node("Native opened")
+func _on_MobileAds_native_closed():
+	_add_text_Advice_Node("Native closed")
+func _on_MobileAds_native_clicked():
+	_add_text_Advice_Node("Native clicked")
+func _on_MobileAds_native_failed_to_load(error_code):
+	_add_text_Advice_Node("Native failed to load, error_code = " + str(error_code))
+func _on_MobileAds_native_recorded_impression():
+	_add_text_Advice_Node("Native recorded impression")
+
 func _on_MobileAds_initialization_complete(status : int, adapter_name : String) -> void:
 	if status == MobileAds.AdMobSettings.INITIALIZATION_STATUS.READY:
 		MobileAds.load_interstitial()
@@ -157,6 +187,7 @@ func _on_MobileAds_initialization_complete(status : int, adapter_name : String) 
 		BannerPosition.disabled = false
 		RequestUserConsent.disabled = false
 		ResetConsentState.disabled = false
+		EnableNative.disabled = false
 	else:
 		_add_text_Advice_Node("AdMob not initialized, check your configuration")
 	_add_text_Advice_Node("---------------------------------------------------")
@@ -233,6 +264,28 @@ func _on_MobileAds_rewarded_interstitial_ad_closed() -> void:
 func _on_MobileAds_rewarded_interstitial_earned_rewarded(currency : String, amount : int) -> void:
 	Advice.bbcode_text += "EARNED " + currency + " with amount: " + str(amount) + "\n"
 
+
+func reset_native_buttons():
+	DisableNative.disabled = true
+	EnableNative.disabled = false
+	ShowNative.disabled = true
+	HideNative.disabled = true
+
+func _on_MobileAds_native_destroyed():
+	reset_native_buttons()
+	_add_text_Advice_Node("Native destroyed")
+
+func _on_MobileAds_native_loaded():
+	DisableNative.disabled = false
+	EnableNative.disabled = true
+	ShowNative.disabled = false
+	HideNative.disabled = false
+	_add_text_Advice_Node("Native loaded")
+	if MobileAds._native_control != null:
+		_add_text_Advice_Node("Native position: " + str(MobileAds._native_control.rect_position))
+		_add_text_Advice_Node("Native size: " + str(MobileAds._native_control.rect_size))
+
+
 func _on_MobileAds_consent_form_dismissed() -> void:
 	_add_text_Advice_Node("Request Consent from European Users Form dismissed")
 
@@ -295,6 +348,10 @@ func _on_IsRewardedInterstitialLoaded_pressed() -> void:
 	_add_text_Advice_Node("Is RewardedInterstitial loaded: " + str(MobileAds.get_is_rewarded_interstitial_loaded()))
 
 
+func _on_IsNativeLoaded_pressed() -> void:
+	_add_text_Advice_Node("Is Native loaded: " + str(MobileAds.get_is_native_loaded()))
+
+
 func _on_ShowBanner_pressed() -> void:
 	MobileAds.show_banner()
 
@@ -302,3 +359,27 @@ func _on_HideBanner_pressed() -> void:
 	MobileAds.hide_banner()
 
 
+func _on_EnableNative_pressed() -> void:
+	EnableNative.disabled = true
+	MobileAds.load_native("standard", $"%NativeReference")
+	
+	var visible_rect_size: Vector2 = MobileAds._native_control.get_viewport_rect().size
+	
+	var size: Vector2 = MobileAds._native_control.rect_size / visible_rect_size
+	var pos: Vector2 = MobileAds._native_control.rect_position / visible_rect_size
+	_add_text_Advice_Node("Visible rect is " + str(visible_rect_size))
+	_add_text_Advice_Node("Loading Native with sizes: x %s - y %s - w %s - h %s" % [pos.x, pos.y, size.x, size.y])
+
+
+func _on_DisableNative_pressed() -> void:
+	DisableNative.disabled = true
+	EnableNative.disabled = false
+	MobileAds.destroy_native()
+
+
+func _on_ShowNative_pressed() -> void:
+	MobileAds.show_native()
+
+
+func _on_HideNative_pressed() -> void:
+	MobileAds.hide_native()

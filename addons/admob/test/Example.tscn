@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://addons/admob/test/Example.gd" type="Script" id=1]
 [ext_resource path="res://addons/admob/assets/icon-500.png" type="Texture" id=2]
@@ -19,6 +19,18 @@ bg_color = Color( 0, 0, 0, 1 )
 
 [sub_resource type="StyleBoxFlat" id=5]
 bg_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=6]
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color( 1, 0.282353, 0, 1 )
+expand_margin_left = 5.0
+expand_margin_right = 5.0
+expand_margin_top = 5.0
+expand_margin_bottom = 5.0
 
 [node name="Example" type="Control"]
 anchor_right = 1.0
@@ -68,6 +80,7 @@ __meta__ = {
 }
 
 [node name="Advice" type="RichTextLabel" parent="Background"]
+unique_name_in_owner = true
 anchor_top = 0.0933333
 anchor_right = 1.0
 anchor_bottom = 0.402222
@@ -103,13 +116,14 @@ __meta__ = {
 }
 
 [node name="Banner" type="HBoxContainer" parent="Background/TabContainer/AdFormats/VBoxContainer"]
-margin_top = 46.0
+margin_top = 22.0
 margin_right = 426.0
-margin_bottom = 66.0
+margin_bottom = 42.0
 size_flags_vertical = 0
 alignment = 1
 
 [node name="EnableBanner" type="Button" parent="Background/TabContainer/AdFormats/VBoxContainer/Banner"]
+unique_name_in_owner = true
 margin_right = 211.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
@@ -120,6 +134,7 @@ __meta__ = {
 }
 
 [node name="DisableBanner" type="Button" parent="Background/TabContainer/AdFormats/VBoxContainer/Banner"]
+unique_name_in_owner = true
 margin_left = 215.0
 margin_right = 426.0
 margin_bottom = 20.0
@@ -128,13 +143,14 @@ disabled = true
 text = "DISABLE BANNER"
 
 [node name="Banner2" type="HBoxContainer" parent="Background/TabContainer/AdFormats/VBoxContainer"]
-margin_top = 70.0
+margin_top = 46.0
 margin_right = 426.0
-margin_bottom = 90.0
+margin_bottom = 66.0
 size_flags_vertical = 0
 alignment = 1
 
 [node name="ShowBanner" type="Button" parent="Background/TabContainer/AdFormats/VBoxContainer/Banner2"]
+unique_name_in_owner = true
 margin_right = 211.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
@@ -145,6 +161,7 @@ __meta__ = {
 }
 
 [node name="HideBanner" type="Button" parent="Background/TabContainer/AdFormats/VBoxContainer/Banner2"]
+unique_name_in_owner = true
 margin_left = 215.0
 margin_right = 426.0
 margin_bottom = 20.0
@@ -153,25 +170,82 @@ disabled = true
 text = "HIDE BANNER"
 
 [node name="Interstitial" type="Button" parent="Background/TabContainer/AdFormats/VBoxContainer"]
-margin_top = 94.0
+unique_name_in_owner = true
+margin_top = 70.0
 margin_right = 426.0
-margin_bottom = 114.0
+margin_bottom = 90.0
 disabled = true
 text = "INTERSTITIAL"
 
 [node name="Rewarded" type="Button" parent="Background/TabContainer/AdFormats/VBoxContainer"]
-margin_top = 118.0
+unique_name_in_owner = true
+margin_top = 94.0
 margin_right = 426.0
-margin_bottom = 138.0
+margin_bottom = 114.0
 disabled = true
 text = "REWARDED"
 
 [node name="RewardedInterstitial" type="Button" parent="Background/TabContainer/AdFormats/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 118.0
+margin_right = 426.0
+margin_bottom = 138.0
+disabled = true
+text = "REWARDED INTERSTITIAL"
+
+[node name="Native" type="HBoxContainer" parent="Background/TabContainer/AdFormats/VBoxContainer"]
 margin_top = 142.0
 margin_right = 426.0
 margin_bottom = 162.0
+size_flags_vertical = 0
+alignment = 1
+
+[node name="EnableNative" type="Button" parent="Background/TabContainer/AdFormats/VBoxContainer/Native"]
+unique_name_in_owner = true
+margin_right = 211.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
 disabled = true
-text = "REWARDED INTERSTITIAL"
+text = "ENABLE NATIVE"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="DisableNative" type="Button" parent="Background/TabContainer/AdFormats/VBoxContainer/Native"]
+unique_name_in_owner = true
+margin_left = 215.0
+margin_right = 426.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+disabled = true
+text = "DISABLE NATIVE"
+
+[node name="Native2" type="HBoxContainer" parent="Background/TabContainer/AdFormats/VBoxContainer"]
+margin_top = 166.0
+margin_right = 426.0
+margin_bottom = 186.0
+size_flags_vertical = 0
+alignment = 1
+
+[node name="ShowNative" type="Button" parent="Background/TabContainer/AdFormats/VBoxContainer/Native2"]
+unique_name_in_owner = true
+margin_right = 211.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+disabled = true
+text = "SHOW NATIVE"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HideNative" type="Button" parent="Background/TabContainer/AdFormats/VBoxContainer/Native2"]
+unique_name_in_owner = true
+margin_left = 215.0
+margin_right = 426.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+disabled = true
+text = "HIDE NATIVE"
 
 [node name="Banner" type="Tabs" parent="Background/TabContainer"]
 visible = false
@@ -188,15 +262,15 @@ __meta__ = {
 }
 
 [node name="Control" type="Control" parent="Background/TabContainer/Banner/VBoxContainer"]
-margin_top = 58.0
-margin_right = 355.0
-margin_bottom = 68.0
+margin_top = 72.0
+margin_right = 426.0
+margin_bottom = 82.0
 rect_min_size = Vector2( 0, 10 )
 
 [node name="Position" type="CheckBox" parent="Background/TabContainer/Banner/VBoxContainer"]
-margin_top = 72.0
-margin_right = 355.0
-margin_bottom = 88.0
+margin_top = 86.0
+margin_right = 426.0
+margin_bottom = 102.0
 custom_styles/hover = SubResource( 4 )
 custom_styles/pressed = SubResource( 4 )
 custom_styles/normal = SubResource( 4 )
@@ -207,18 +281,18 @@ __meta__ = {
 }
 
 [node name="RespectSafeArea" type="CheckBox" parent="Background/TabContainer/Banner/VBoxContainer"]
-margin_top = 92.0
-margin_right = 355.0
-margin_bottom = 108.0
+margin_top = 106.0
+margin_right = 426.0
+margin_bottom = 122.0
 custom_styles/hover = SubResource( 4 )
 custom_styles/pressed = SubResource( 4 )
 custom_styles/normal = SubResource( 4 )
 text = "Respect Safe Area (RECOMMENDED TRUE)"
 
 [node name="BannerSizes" type="ItemList" parent="Background/TabContainer/Banner/VBoxContainer"]
-margin_top = 112.0
-margin_right = 355.0
-margin_bottom = 121.0
+margin_top = 126.0
+margin_right = 426.0
+margin_bottom = 135.0
 auto_height = true
 same_column_width = true
 __meta__ = {
@@ -240,16 +314,18 @@ __meta__ = {
 }
 
 [node name="RequestUserConsent" type="Button" parent="Background/TabContainer/UMP/VBoxContainer"]
-margin_top = 67.0
-margin_right = 355.0
-margin_bottom = 87.0
+unique_name_in_owner = true
+margin_top = 82.0
+margin_right = 426.0
+margin_bottom = 102.0
 disabled = true
 text = "REQUEST USER CONSENT"
 
 [node name="ResetConsentState" type="Button" parent="Background/TabContainer/UMP/VBoxContainer"]
-margin_top = 91.0
-margin_right = 355.0
-margin_bottom = 111.0
+unique_name_in_owner = true
+margin_top = 106.0
+margin_right = 426.0
+margin_bottom = 126.0
 disabled = true
 text = "RESET CONSENT STATE"
 __meta__ = {
@@ -271,40 +347,49 @@ __meta__ = {
 }
 
 [node name="IsInitialized" type="Button" parent="Background/TabContainer/General/VBoxContainer"]
-margin_top = 31.0
-margin_right = 355.0
-margin_bottom = 51.0
+margin_top = 34.0
+margin_right = 426.0
+margin_bottom = 54.0
 text = "is_initialized()"
 
 [node name="IsBannerLoaded" type="Button" parent="Background/TabContainer/General/VBoxContainer"]
-margin_top = 55.0
-margin_right = 355.0
-margin_bottom = 75.0
+margin_top = 58.0
+margin_right = 426.0
+margin_bottom = 78.0
 text = "is_banner_loaded()"
 
 [node name="IsInterstitialLoaded" type="Button" parent="Background/TabContainer/General/VBoxContainer"]
-margin_top = 79.0
-margin_right = 355.0
-margin_bottom = 99.0
+margin_top = 82.0
+margin_right = 426.0
+margin_bottom = 102.0
 text = "is_interstitial_loaded()"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="IsRewardedLoaded" type="Button" parent="Background/TabContainer/General/VBoxContainer"]
-margin_top = 103.0
-margin_right = 355.0
-margin_bottom = 123.0
+margin_top = 106.0
+margin_right = 426.0
+margin_bottom = 126.0
 text = "is_rewarded_loaded()"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="IsRewardedInterstitialLoaded" type="Button" parent="Background/TabContainer/General/VBoxContainer"]
-margin_top = 127.0
-margin_right = 355.0
-margin_bottom = 147.0
+margin_top = 130.0
+margin_right = 426.0
+margin_bottom = 150.0
 text = "is_rewarded_interstitial_loaded()"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="IsNativeLoaded" type="Button" parent="Background/TabContainer/General/VBoxContainer"]
+margin_top = 154.0
+margin_right = 426.0
+margin_bottom = 174.0
+text = "is_native_loaded()"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -327,6 +412,15 @@ script = ExtResource( 5 )
 [node name="Music" type="AudioStreamPlayer" parent="Background/MusicCheckButton"]
 stream = ExtResource( 4 )
 
+[node name="NativeReference" type="Panel" parent="."]
+unique_name_in_owner = true
+anchor_left = 0.15
+anchor_top = 0.78
+anchor_right = 0.85
+anchor_bottom = 0.846
+mouse_filter = 2
+custom_styles/panel = SubResource( 6 )
+
 [connection signal="pressed" from="Background/TabContainer/AdFormats/VBoxContainer/Banner/EnableBanner" to="." method="_on_EnableBanner_pressed"]
 [connection signal="pressed" from="Background/TabContainer/AdFormats/VBoxContainer/Banner/DisableBanner" to="." method="_on_DisableBanner_pressed"]
 [connection signal="pressed" from="Background/TabContainer/AdFormats/VBoxContainer/Banner2/ShowBanner" to="." method="_on_ShowBanner_pressed"]
@@ -334,6 +428,10 @@ stream = ExtResource( 4 )
 [connection signal="pressed" from="Background/TabContainer/AdFormats/VBoxContainer/Interstitial" to="." method="_on_Interstitial_pressed"]
 [connection signal="pressed" from="Background/TabContainer/AdFormats/VBoxContainer/Rewarded" to="." method="_on_Rewarded_pressed"]
 [connection signal="pressed" from="Background/TabContainer/AdFormats/VBoxContainer/RewardedInterstitial" to="." method="_on_RewardedInterstitial_pressed"]
+[connection signal="pressed" from="Background/TabContainer/AdFormats/VBoxContainer/Native/EnableNative" to="." method="_on_EnableNative_pressed"]
+[connection signal="pressed" from="Background/TabContainer/AdFormats/VBoxContainer/Native/DisableNative" to="." method="_on_DisableNative_pressed"]
+[connection signal="pressed" from="Background/TabContainer/AdFormats/VBoxContainer/Native2/ShowNative" to="." method="_on_ShowNative_pressed"]
+[connection signal="pressed" from="Background/TabContainer/AdFormats/VBoxContainer/Native2/HideNative" to="." method="_on_HideNative_pressed"]
 [connection signal="pressed" from="Background/TabContainer/Banner/VBoxContainer/Position" to="." method="_on_Position_pressed"]
 [connection signal="pressed" from="Background/TabContainer/Banner/VBoxContainer/RespectSafeArea" to="." method="_on_RespectSafeArea_pressed"]
 [connection signal="item_selected" from="Background/TabContainer/Banner/VBoxContainer/BannerSizes" to="." method="_on_BannerSizes_item_selected"]
@@ -344,4 +442,5 @@ stream = ExtResource( 4 )
 [connection signal="pressed" from="Background/TabContainer/General/VBoxContainer/IsInterstitialLoaded" to="." method="_on_IsInterstitialLoaded_pressed"]
 [connection signal="pressed" from="Background/TabContainer/General/VBoxContainer/IsRewardedLoaded" to="." method="_on_IsRewardedLoaded_pressed"]
 [connection signal="pressed" from="Background/TabContainer/General/VBoxContainer/IsRewardedInterstitialLoaded" to="." method="_on_IsRewardedInterstitialLoaded_pressed"]
+[connection signal="pressed" from="Background/TabContainer/General/VBoxContainer/IsNativeLoaded" to="." method="_on_IsNativeLoaded_pressed"]
 [connection signal="pressed" from="Background/MusicCheckButton" to="Background/MusicCheckButton" method="_on_MusicCheckButton_pressed"]

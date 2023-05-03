@@ -4,11 +4,13 @@ const ANDROID_BANNER_TEST_ID: String = "ca-app-pub-3940256099942544/6300978111"
 const ANDROID_INTERSTITIAL_TEST_ID: String = "ca-app-pub-3940256099942544/1033173712"
 const ANDROID_REWARDED_VIDEO_TEST_ID: String = "ca-app-pub-3940256099942544/5224354917"
 const ANDROID_REWARDED_INTERSTITIAL_TEST_ID: String = "ca-app-pub-3940256099942544/5354046379"
+const ANDROID_NATIVE_TEST_ID: String = "ca-app-pub-3940256099942544/2247696110"
 
 const IOS_BANNER_TEST_ID: String = "ca-app-pub-3940256099942544/2934735716"
 const IOS_INTERSTITIAL_TEST_ID: String = "ca-app-pub-3940256099942544/4411468910"
 const IOS_REWARDED_VIDEO_TEST_ID: String = "ca-app-pub-3940256099942544/1712485313"
 const IOS_REWARDED_INTERSTITIAL_TEST_ID: String = "ca-app-pub-3940256099942544/6978759866"
+const IOS_NATIVE_TEST_ID: String = "ca-app-pub-3940256099942544/3986624511"
 
 signal initialization_complete(status, adapter_name)
 
@@ -51,6 +53,14 @@ signal rewarded_interstitial_ad_clicked()
 signal rewarded_interstitial_ad_closed()
 signal rewarded_interstitial_ad_recorded_impression()
 signal rewarded_interstitial_earned_rewarded(currency, amount)
+
+signal native_loaded()
+signal native_failed_to_load(error_code)
+signal native_opened()
+signal native_clicked()
+signal native_closed()
+signal native_recorded_impression()
+signal native_destroyed()
 
 
 var AdMobSettings = preload("res://addons/admob/src/utils/AdMobSettings.gd").new()
@@ -98,10 +108,12 @@ func _set_ids_to_test() -> void:
 		ANDROID_INTERSTITIAL_TEST_ID: config.interstitial.unit_ids.Android,
 		ANDROID_REWARDED_VIDEO_TEST_ID: config.rewarded.unit_ids.Android,
 		ANDROID_REWARDED_INTERSTITIAL_TEST_ID: config.rewarded_interstitial.unit_ids.Android,
+		ANDROID_NATIVE_TEST_ID: config.native.unit_ids.Android,
 		IOS_BANNER_TEST_ID: config.banner.unit_ids.iOS,
 		IOS_INTERSTITIAL_TEST_ID: config.interstitial.unit_ids.iOS,
 		IOS_REWARDED_VIDEO_TEST_ID: config.rewarded.unit_ids.iOS,
 		IOS_REWARDED_INTERSTITIAL_TEST_ID: config.rewarded_interstitial.unit_ids.iOS,
+		IOS_NATIVE_TEST_ID: config.native.unit_ids.iOS,
 	}
 	
 	for test_id in reconfig.keys():
@@ -153,6 +165,14 @@ func _connect_signals() -> void:
 	_plugin.connect("rewarded_interstitial_ad_closed", self, "_on_AdMob_rewarded_interstitial_ad_closed")
 	_plugin.connect("rewarded_interstitial_ad_recorded_impression", self, "_on_AdMob_rewarded_interstitial_ad_recorded_impression")
 	_plugin.connect("rewarded_interstitial_earned_rewarded", self, "_on_AdMob_rewarded_interstitial_earned_rewarded")
+	
+	_plugin.connect("native_loaded", self, "_on_AdMob_native_loaded")
+	_plugin.connect("native_failed_to_load", self, "_on_AdMob_native_failed_to_load")
+	_plugin.connect("native_opened", self, "_on_AdMob_native_opened")
+	_plugin.connect("native_clicked", self, "_on_AdMob_native_clicked")
+	_plugin.connect("native_closed", self, "_on_AdMob_native_closed")
+	_plugin.connect("native_recorded_impression", self, "_on_AdMob_native_recorded_impression")
+	_plugin.connect("native_destroyed", self, "_on_AdMob_native_destroyed")
 
 
 func _on_AdMob_initialization_complete(status : int, adapter_name : String) -> void:
@@ -240,3 +260,17 @@ func _on_AdMob_rewarded_interstitial_earned_rewarded(currency : String, amount :
 	emit_signal("rewarded_interstitial_earned_rewarded", currency, amount)
 
 
+func _on_AdMob_native_loaded() -> void:
+	emit_signal("native_loaded")
+func _on_AdMob_native_failed_to_load(error_code: int) -> void:
+	emit_signal("native_failed_to_load", error_code)
+func _on_AdMob_native_opened() -> void:
+	emit_signal("native_opened")
+func _on_AdMob_native_clicked() -> void:
+	emit_signal("native_clicked")
+func _on_AdMob_native_closed() -> void:
+	emit_signal("native_closed")
+func _on_AdMob_native_recorded_impression() -> void:
+	emit_signal("native_recorded_impression")
+func _on_AdMob_native_destroyed() -> void:
+	emit_signal("native_destroyed")
